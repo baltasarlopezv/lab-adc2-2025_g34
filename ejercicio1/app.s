@@ -15,7 +15,7 @@ main:
 loop1:
 	mov x1, SCREEN_WIDTH         // X Size
 loop0:
-	stur w10,[x0]  // Colorear el pixel N
+	stur w10,[x0, #0]  // Colorear el pixel N
 	add x0,x0,4	   // Siguiente pixel
 	sub x1,x1,1	   // Decrementar contador X
 	cbnz x1,loop0  // Si no terminó la fila, salto
