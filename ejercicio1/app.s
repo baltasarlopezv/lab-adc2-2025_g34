@@ -79,6 +79,67 @@ rellenar_x:               //va marcando puntito en el eje x hasta que llegye a 3
         ldp     x29, x30, [sp], #64
         ret
 
+// ---------------------------------------------------------------
+// CirculoRelleno(cx, cy, r, color) - x0, x1, x2, x3
+CirculoRelleno:
+        stp     x29, x30, [sp, #-80]!
+        stp     x19, x20, [sp, #16]
+        stp     x21, x22, [sp, #32]
+        stp     x23, x24, [sp, #48]
+        stp     x25, x26, [sp, #64]
+        
+        mov     x19, x0         // cx
+        mov     x21, x1         // cy
+        mov     x22, x2         // r
+        mov     x23, x3         // color
+        mov     x26, x20        // Guardar framebuffer base
+        
+        // y = cy - r
+        sub     x24, x21, x22
+        
+cr_rellenar_y:
+        // x = cx - r
+        sub     x25, x19, x22
+        
+cr_rellenar_x:
+        // Calcular (x - cx)^2 + (y - cy)^2
+        sub     x4, x25, x19    // dx = x - cx
+        sub     x5, x24, x21    // dy = y - cy
+        mul     x4, x4, x4      // dx^2
+        mul     x5, x5, x5      // dy^2
+        add     x4, x4, x5      // dx^2 + dy^2
+        
+        // r^2
+        mul     x5, x22, x22
+        
+        // Si distancia <= r^2, dibujar
+        cmp     x4, x5
+        bgt     cr_saltear
+        
+        mov     x0, x25
+        mov     x1, x24
+        mov     x2, x23
+        mov     x20, x26        // Restaurar x20 para pintarpixel
+        bl      pintarpixel
+        
+cr_saltear:
+        add     x25, x25, #1
+        add     x4, x19, x22
+        cmp     x25, x4
+        ble     cr_rellenar_x
+        
+        add     x24, x24, #1
+        add     x4, x21, x22
+        cmp     x24, x4
+        ble     cr_rellenar_y
+        
+        ldp     x25, x26, [sp, #64]
+        ldp     x23, x24, [sp, #48]
+        ldp     x21, x22, [sp, #32]
+        ldp     x19, x20, [sp, #16]
+        ldp     x29, x30, [sp], #80
+        ret
+
 // ===============================================================
 // main
 // ===============================================================
@@ -103,6 +164,56 @@ main:
         movz    w4, 0xAB00, lsl 0    // Verde pasto más claro
         movk    w4, 0x0056, lsl 16
         bl      crearRectangulo
+
+// ===== NUBE IZQUIERDA =====
+        // Círculo 1 de la nube
+        mov     x0, #100
+        mov     x1, #80
+        mov     x2, #35
+        movz    w3, 0xFFFF, lsl 0
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+        
+        // Círculo 2 de la nube
+        mov     x0, #140
+        mov     x1, #70
+        mov     x2, #40
+        movz    w3, 0xFFFF, lsl 0
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+        
+        // Círculo 3 de la nube
+        mov     x0, #180
+        mov     x1, #80
+        mov     x2, #35
+        movz    w3, 0xFFFF, lsl 0
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+
+// ===== NUBE DERECHA =====
+        // Círculo 1 de la nube
+        mov     x0, #480
+        mov     x1, #100
+        mov     x2, #40
+        movz    w3, 0xFFFF, lsl 0
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+        
+        // Círculo 2 de la nube
+        mov     x0, #530
+        mov     x1, #90
+        mov     x2, #45
+        movz    w3, 0xFFFF, lsl 0
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+        
+        // Círculo 3 de la nube
+        mov     x0, #575
+        mov     x1, #100
+        mov     x2, #38
+        movz    w3, 0xFFFF, lsl 0
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
 
 // ---------------------------------------------------------------
 InfLoop:
