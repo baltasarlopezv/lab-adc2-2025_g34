@@ -73,7 +73,7 @@ rellenar_x:               //va marcando puntito en el eje x hasta que llegye a 3
         cmp     x25, x4
         blt     rellenar_y
         
-        ldp     x23, x24, [sp, #48]    /al final de todo antes de retornar los carga devuelta para que el main los vea tal cual los envio y no haya cambios
+        ldp     x23, x24, [sp, #48]   //al final de todo antes de retornar los carga devuelta para que el main los vea tal cual los envio y no haya cambios
         ldp     x21, x22, [sp, #32]
         ldp     x19, x20, [sp, #16]
         ldp     x29, x30, [sp], #64
@@ -216,6 +216,137 @@ main:
         bl      CirculoRelleno
 
 // ---------------------------------------------------------------
+// ===== FLOR IZQUIERDA (ROJA) =====
+        // Tallo verde oscuro
+        mov     x0, #150
+        mov     x1, #320
+        mov     x2, #6
+        mov     x3, #90
+        movz    w4, 0x3010, lsl 0    // Verde muy oscuro
+        movk    w4, 0x0016, lsl 16
+        bl      crearRectangulo
+        
+        // Centro amarillo
+        mov     x0, #150
+        mov     x1, #280
+        mov     x2, #20
+        movz    w3, 0xD700, lsl 0
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+        
+        // Pétalo superior
+        mov     x0, #150
+        mov     x1, #245
+        mov     x2, #15
+        movz    w3, 0x2020, lsl 0
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+        
+        // Pétalo inferior
+        mov     x0, #150
+        mov     x1, #315
+        mov     x2, #15
+        movz    w3, 0x2020, lsl 0
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+        
+        // Pétalo izquierdo
+        mov     x0, #115
+        mov     x1, #280
+        mov     x2, #15
+        movz    w3, 0x2020, lsl 0
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+        
+        // Pétalo derecho
+        mov     x0, #185
+        mov     x1, #280
+        mov     x2, #15
+        movz    w3, 0x2020, lsl 0
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+        
+        // Pétalo diagonal superior izquierdo
+        mov     x0, #125
+        mov     x1, #255
+        mov     x2, #15
+        movz    w3, 0x2020, lsl 0
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+        
+        // Pétalo diagonal superior derecho
+        mov     x0, #175
+        mov     x1, #255
+        mov     x2, #15
+        movz    w3, 0x2020, lsl 0
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+// ===== FLOR DERECHA (ROJA) =====
+        // Tallo verde oscuro
+        mov     x0, #490
+        mov     x1, #320
+        mov     x2, #6
+        mov     x3, #100
+        movz    w4, 0x3010, lsl 0    // Verde muy oscuro
+        movk    w4, 0x0016, lsl 16
+        bl      crearRectangulo
+        
+        // Centro amarillo
+        mov     x0, #490
+        mov     x1, #290
+        mov     x2, #22
+        movz    w3, 0xD700, lsl 0
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+        
+        // Pétalo superior ROJO
+        mov     x0, #490
+        mov     x1, #250
+        mov     x2, #17
+        movz    w3, 0x2020, lsl 0    // Rojo
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+        
+        // Pétalo inferior ROJO
+        mov     x0, #490
+        mov     x1, #330
+        mov     x2, #17
+        movz    w3, 0x2020, lsl 0    // Rojo
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+        
+        // Pétalo izquierdo ROJO
+        mov     x0, #450
+        mov     x1, #290
+        mov     x2, #17
+        movz    w3, 0x2020, lsl 0    // Rojo
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+        
+        // Pétalo derecho ROJO
+        mov     x0, #530
+        mov     x1, #290
+        mov     x2, #17
+        movz    w3, 0x2020, lsl 0    // Rojo
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+        
+        // Pétalo diagonal superior izquierdo ROJO
+        mov     x0, #462
+        mov     x1, #262
+        mov     x2, #17
+        movz    w3, 0x2020, lsl 0    // Rojo
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+        
+        // Pétalo diagonal superior derecho ROJO
+        mov     x0, #518
+        mov     x1, #262
+        mov     x2, #17
+        movz    w3, 0x2020, lsl 0    // Rojo
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+
 InfLoop:
         b       InfLoop
 
