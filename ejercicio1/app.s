@@ -1,6 +1,6 @@
 // ===============================================================
 // Ejercicio 1: "Flores en el jardin"
-// 640x480, XRGB8888 little-endian (bytes B,G,R,A)
+// 640x480 (bytes B,G,R,A)
 // x0 = base del framebuffer
 // Imagen: Tres flores coloridas sobre pasto verde con cielo celeste y nubes blancas
 // ===============================================================
@@ -36,7 +36,6 @@ pintarpixel:
 
 
 
-// ---------------------------------------------------------------
 // crearRectangulo(x, y, width, height, color) - x0, x1, x2, x3, x4
 crearRectangulo:
         stp     x29, x30, [sp, #-64]!    //stp guarda los registros para que entre los bucles, sumas y resta no se pierdan 
@@ -79,7 +78,6 @@ rellenar_x:               //va marcando puntito en el eje x hasta que llegye a 3
         ldp     x29, x30, [sp], #64
         ret
 
-// ---------------------------------------------------------------
 // CirculoRelleno(cx, cy, r, color) - x0, x1, x2, x3
 CirculoRelleno:
         stp     x29, x30, [sp, #-80]!
@@ -138,6 +136,52 @@ cr_saltear:
         ldp     x21, x22, [sp, #32]
         ldp     x19, x20, [sp, #16]
         ldp     x29, x30, [sp], #80
+        ret
+// crearTriangulo(x, y, base, altura, color)
+// Triángulo isósceles apuntando hacia la derecha
+crearTriangulo:
+        stp     x29, x30, [sp, #-64]!
+        stp     x19, x20, [sp, #16]
+        stp     x21, x22, [sp, #32]
+        stp     x23, x24, [sp, #48]
+
+        mov     x19, x0         // x inicial
+        mov     x21, x1         // y inicial (tope)
+        mov     x22, x2         // base
+        mov     x23, x3         // altura
+        mov     x24, x4         // color
+        mov     x10, x20        // guardar framebuffer base
+
+        mov     x25, #0         // contador de filas (dy)
+
+tri_y_loop:
+        mov     x26, #0         // contador de columnas (dx)
+        // calcular límite horizontal (va creciendo con y)
+        // ancho = (base * dy) / altura
+        mul     x27, x22, x25
+        sdiv    x27, x27, x23   // x27 = ancho actual
+
+tri_x_loop:
+        mov     x0, x19
+        add     x0, x0, x26     // x = x_inicial + dx
+        mov     x1, x21
+        add     x1, x1, x25     // y = y_inicial + dy
+        mov     x2, x24
+        mov     x20, x10
+        bl      pintarpixel
+
+        add     x26, x26, #1
+        cmp     x26, x27
+        blt     tri_x_loop
+
+        add     x25, x25, #1
+        cmp     x25, x23
+        blt     tri_y_loop
+
+        ldp     x23, x24, [sp, #48]
+        ldp     x21, x22, [sp, #32]
+        ldp     x19, x20, [sp, #16]
+        ldp     x29, x30, [sp], #64
         ret
 
 // ===============================================================
@@ -215,15 +259,15 @@ main:
         movk    w3, 0x00FF, lsl 16
         bl      CirculoRelleno
 
-// ---------------------------------------------------------------
 // ===== FLOR IZQUIERDA (ROJA) =====
         // Tallo verde oscuro
         mov     x0, #150
         mov     x1, #320
         mov     x2, #6
         mov     x3, #90
-        movz    w4, 0x3010, lsl 0    // Verde muy oscuro
-        movk    w4, 0x0016, lsl 16
+        movz    w4, 0x2B40, lsl 0
+        movk    w4, 0x0006, lsl 16
+
         bl      crearRectangulo
         
         // Centro amarillo
@@ -281,14 +325,40 @@ main:
         movz    w3, 0x2020, lsl 0
         movk    w3, 0x00FF, lsl 16
         bl      CirculoRelleno
+         // Pétalo diagonal inferior izquierdo
+        mov     x0, #125
+        mov     x1, #305
+        mov     x2, #15
+        movz    w3, 0x2020, lsl 0
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+
+        // Pétalo diagonal inferior derecho
+        mov     x0, #175
+        mov     x1, #305
+        mov     x2, #15
+        movz    w3, 0x2020, lsl 0
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+
+// Hoja triangular izquierda
+        mov     x0, #156        // x inicial (pegado al tallo)
+        mov     x1, #350        // y inicial
+        mov     x2, #25         // base
+        mov     x3, #25         // altura
+        movz    w4, 0x2B40, lsl 0
+        movk    w4, 0x0006, lsl 16
+        bl      crearTriangulo
 // ===== FLOR DERECHA (ROJA) =====
         // Tallo verde oscuro
         mov     x0, #490
         mov     x1, #320
         mov     x2, #6
         mov     x3, #100
-        movz    w4, 0x3010, lsl 0    // Verde muy oscuro
-        movk    w4, 0x0016, lsl 16
+        movz    w4, 0x2B40, lsl 0
+        movk    w4, 0x0006, lsl 16  
+        
+
         bl      crearRectangulo
         
         // Centro amarillo
@@ -346,8 +416,33 @@ main:
         movz    w3, 0x2020, lsl 0    // Rojo
         movk    w3, 0x00FF, lsl 16
         bl      CirculoRelleno
+                // Pétalo diagonal inferior izquierdo ROJO
+        mov     x0, #462
+        mov     x1, #318
+        mov     x2, #17
+        movz    w3, 0x2020, lsl 0
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+
+        // Pétalo diagonal inferior derecho ROJO
+        mov     x0, #518
+        mov     x1, #318
+        mov     x2, #17
+        movz    w3, 0x2020, lsl 0
+        movk    w3, 0x00FF, lsl 16
+        bl      CirculoRelleno
+              
+ // Hoja triangular derecha
+        mov     x0, #496        // x inicial (pegado al tallo)
+        mov     x1, #350        // y inicial
+        mov     x2, #25         // base
+        mov     x3, #25         // altura
+        movz    w4, 0x2B40, lsl 0
+        movk    w4, 0x0006, lsl 16
+        bl      crearTriangulo
+
+
 
 InfLoop:
         b       InfLoop
 
-        
