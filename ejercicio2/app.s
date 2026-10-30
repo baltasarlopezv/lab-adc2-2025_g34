@@ -519,7 +519,7 @@ anim_loop:
         bl      CirculoRelleno
 
         // Retardo simple.
-        ldr     x9, =0x1000000
+        ldr     x9, =0x200000
 delay_loop:
         subs    x9, x9, #1
         b.ne    delay_loop
